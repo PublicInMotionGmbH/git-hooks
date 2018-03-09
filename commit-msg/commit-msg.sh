@@ -1,20 +1,38 @@
 #!/bin/bash
 
-commit_regex='([A-Z]+-[0-9]+|merge)'
-branch_regex='([A-Z]+-[0-9]+)'
-error_msg="Aborting commit. Your commit message is missing either a JIRA Issue or 'Merge'"
+exec < /dev/tty
 
+COMMIT_REGEX='([A-Z]+-[0-9]+|merge)'
+BRANCH_REGEX='([A-Z]+-[0-9]+)'
+ERROR_MSG="Aborting commit. Your commit message is missing either a JIRA Issue or 'Merge'"
 
 BRANCH_NAME=$(git symbolic-ref --short HEAD)
 BRANCH_NAME="${BRANCH_NAME##*/}"
 
-BRANCH_IN_COMMIT=$(grep -c "\[$BRANCH_NAME\]" $1)
+BRANCH_IN_COMMIT=$(grep -c "$BRANCH_NAME" $1)
 
 if [ -n "$BRANCH_NAME" ]  && [[ $BRANCH_NAME =~ ^[A-Z]+-[0-9]+$ ]] && ! [[ $BRANCH_IN_COMMIT -ge 1 ]]; then 
   sed -i.bak -e "1s/^/$BRANCH_NAME /" $1
 fi
 
-if ! grep -iqE "$commit_regex" "$1"; then
-    echo "$error_msg" >&2
+if [ $(grep -o '[A-Z]\+-[0-9]\+' $1 | wc -l) -gt 1 ]; then
+  echo "Your commit message:"
+  echo $(cat $1)
+  echo "Please tell me what you want to do with this commit message...? [Y][N] " 
+  read DECISION
+  if [ "${DECISION}" == "Y" ]; then
+	echo "Yes my master!"
+  elif [ "${DECISION}" == "N" ]; then
+     echo "OK, so please fix your commit message."
+	 exit 1
+  else 
+	echo "Please use git cli or anwser with Y or N"
+	exit 1
+  fi	
+  
+fi
+
+if ! grep -iqE "$COMMIT_REGEX" "$1"; then
+    echo "$ERROR_MSG" >&2
     exit 1
 fi
