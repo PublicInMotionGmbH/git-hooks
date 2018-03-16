@@ -32,6 +32,19 @@ if [ $(grep -o '[A-Z]\+-[0-9]\+' $1 | wc -l) -gt 1 ]; then
   
 fi
 
+PREFIX=$(echo $(cat $1 | grep -Eo '([A-Z]{3,}-[0-9]{3,} {1,})'))
+SUFFIX=$(cat $1 | sed -E 's/([A-Z]{3,}-[0-9]{3,}[[:space:]])//g')
+
+if which perl >/dev/null; then
+  UPPERCASED_SUFFIX=$(echo $SUFFIX | perl -ne 'print ucfirst($_)')
+else
+  UPPERCASED_SUFFIX=$(echo $SUFFIX | sed 's/./\u&/')
+fi
+
+FINAL_COMMIT="${PREFIX} ${UPPERCASED_SUFFIX}"
+
+echo "$FINAL_COMMIT" > "$1"
+
 if ! grep -iqE "$COMMIT_REGEX" "$1"; then
     echo "$ERROR_MSG" >&2
     exit 1
