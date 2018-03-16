@@ -9,7 +9,7 @@
 ## Shell example
 
 ```bash
-curl https://raw.githubusercontent.com/PublicInMotionGmbH/git-hooks/master/commit-msg/commit-msg.sh > .git/hooks/commit-msg
+curl https://raw.githubusercontent.com/PublicInMotionGmbH/git-hooks/master/commit-msg/commit-msg > .git/hooks/commit-msg
 
 rm .git/hooks/commit-msg.sample
 
