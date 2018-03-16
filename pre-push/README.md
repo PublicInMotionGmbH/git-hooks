@@ -10,7 +10,7 @@
 ## Shell example
 
 ```bash
-curl https://raw.githubusercontent.com/PublicInMotionGmbH/git-hooks/master/pre-push/android-pre-push.sh > .git/hooks/pre-push
+curl https://raw.githubusercontent.com/PublicInMotionGmbH/git-hooks/master/pre-push/android-pre-push > .git/hooks/pre-push
 
 rm .git/hooks/pre-push.sample
 
