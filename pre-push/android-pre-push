@@ -1,11 +1,15 @@
 #!/bin/bash
 
-git stash -q --keep-index
+set -e
+
+git stash save "prePush" -q --keep-index
+
+
+function unstash {
+	git stash apply stash^{/prePush} -q || true
+}
+
+trap unstash EXIT
+
 
 ./gradlew detektCheck checkstyle checkstyleMain checkstyleTest -q --daemon
-
-RESULT=$?
-
-git stash pop -q
-
-exit $RESULT
