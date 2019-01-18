@@ -12,4 +12,4 @@ function unstash {
 trap unstash EXIT
 
 
-./gradlew detektCheck checkstyle checkstyleMain checkstyleTest -q --daemon
+./gradlew detekt checkstyle checkstyleMain checkstyleTest -q --daemon
